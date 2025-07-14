@@ -1,5 +1,3 @@
-
-
 let translationModes = [];
 
 // デフォルトのモード
@@ -45,7 +43,7 @@ function initialize() {
   });
 }
 
-// メニューがクリックされたときの処理
+// ★ 修正: メニューがクリックされたときの処理
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   const selectedText = info.selectionText;
   if (!selectedText) {
@@ -53,16 +51,38 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   }
 
   const modeIndex = parseInt(info.menuItemId.replace('translate-mode-', ''));
-  const selectedMode = translationModes[modeIndex];
+  // 'parent-translate' などのクリックは無視
+  if (isNaN(modeIndex)) {
+    return;
+  }
 
-  if (selectedMode) {
-    const prompt = `${selectedMode.prompt}\n\n---\n\n${selectedText}`;
-    const chatGptUrl = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
-    chrome.tabs.create({ url: chatGptUrl });
+  // Service Workerがスリープから復帰した直後でも安定して動作するように、
+  // クリック時に直接ストレージから設定を読み込む
+  chrome.storage.sync.get('translationModes', (data) => {
+    const modes = (data.translationModes && data.translationModes.length > 0)
+      ? data.translationModes
+      : defaultModes;
+
+    const selectedMode = modes[modeIndex];
+
+    if (selectedMode) {
+      const prompt = `${selectedMode.prompt}\n\n---\n\n${selectedText}`;
+      const chatGptUrl = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
+      chrome.tabs.create({ url: chatGptUrl });
+    }
+  });
+});
+
+
+// 設定が変更されたときにメニューを再構築するリスナー
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  if (namespace === 'sync' && changes.translationModes) {
+    // translationModesが変更されたら、メニューを再構築するためにinitializeを呼び出す
+    initialize();
   }
 });
 
+
 // 拡張機能のインストール時と起動時に初期化
 chrome.runtime.onInstalled.addListener(initialize);
-// chrome.runtime.onStartup.addListener(initialize); // ブラウザ起動時も
-
+chrome.runtime.onStartup.addListener(initialize);

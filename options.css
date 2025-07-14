@@ -1,0 +1,280 @@
+:root {
+  --font-family: 'Segoe UI', 'Meiryo', 'Hiragino Kaku Gothic ProN', 'MS PGothic', sans-serif;
+
+  /* Light Mode */
+  --bg-grad-start-light: #e0eafc;
+  --bg-grad-end-light: #f5f7fa;
+  --card-bg-light: #ffffff;
+  --text-color-light: #24292e;
+  --subtle-text-light: #57606a;
+  --border-color-light: #d0d7de;
+  --input-bg-light: #f6f8fa;
+
+  /* Dark Mode */
+  --bg-grad-start-dark: #0d1117;
+  --bg-grad-end-dark: #161b22;
+  --card-bg-dark: #161b22;
+  --text-color-dark: #c9d1d9;
+  --subtle-text-dark: #8b949e;
+  --border-color-dark: #30363d;
+  --input-bg-dark: #0d1117;
+
+  /* Common */
+  --primary-grad-start: #589bf6;
+  --primary-grad-end: #2f81f7;
+  --primary-hover: #1f6eeb;
+  --danger-color: #d73a49;
+  --danger-hover: #b62331;
+  --success-color: #2da44e;
+  --shadow-color: rgba(100, 100, 150, 0.15);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+body {
+  font-family: var(--font-family);
+  background: linear-gradient(135deg, var(--bg-grad-start-light), var(--bg-grad-end-light));
+  color: var(--text-color-light);
+  padding: 2em 1em;
+  min-height: 100vh;
+  box-sizing: border-box;
+  transition: background 0.4s, color 0.4s;
+}
+
+body.dark-mode {
+  background: linear-gradient(135deg, var(--bg-grad-start-dark), var(--bg-grad-end-dark));
+  color: var(--text-color-dark);
+}
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color-light);
+  padding-bottom: 15px;
+  transition: border-color 0.4s;
+}
+body.dark-mode .header {
+  border-bottom-color: var(--border-color-dark);
+}
+
+h1 {
+  font-size: 26px;
+  margin: 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+/* ★ 追加: ヘッダーアイコンのスタイル */
+.header-icon {
+  width: 28px;
+  height: 28px;
+  margin-right: 12px;
+}
+
+p {
+  color: var(--subtle-text-light);
+  margin-top: 15px;
+  text-align: center;
+  transition: color 0.4s;
+}
+body.dark-mode p {
+  color: var(--subtle-text-dark);
+}
+
+#modes-container {
+  margin-top: 25px;
+}
+
+.mode-item {
+  background-color: var(--card-bg-light);
+  border: 1px solid var(--border-color-light);
+  border-radius: 12px;
+  padding: 25px 25px 60px 25px; /* Increased bottom padding */
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  transition: all 0.3s ease-in-out;
+  animation: fadeIn 0.5s ease-out;
+  position: relative;
+}
+body.dark-mode .mode-item {
+  background-color: var(--card-bg-dark);
+  border-color: var(--border-color-dark);
+}
+.mode-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px var(--shadow-color);
+}
+
+.mode-item label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.mode-item input[type="text"],
+.mode-item textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color-light);
+  border-radius: 8px;
+  box-sizing: border-box;
+  margin-bottom: 15px;
+  background-color: var(--input-bg-light);
+  color: var(--text-color-light);
+  transition: all 0.3s;
+}
+body.dark-mode .mode-item input[type="text"],
+body.dark-mode .mode-item textarea {
+  background-color: var(--input-bg-dark);
+  color: var(--text-color-dark);
+  border-color: var(--border-color-dark);
+}
+.mode-item input[type="text"]:focus,
+.mode-item textarea:focus {
+  outline: none;
+  border-color: var(--primary-grad-end);
+  box-shadow: 0 0 0 3px rgba(47, 129, 247, 0.3);
+  background-color: var(--card-bg-light);
+}
+body.dark-mode .mode-item input[type="text"]:focus,
+body.dark-mode .mode-item textarea:focus {
+  background-color: var(--card-bg-dark);
+}
+
+.mode-item textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.delete-mode {
+  background-color: var(--danger-color);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  position: absolute;
+  bottom: 25px;
+  right: 25px;
+}
+.delete-mode:hover {
+  background-color: var(--danger-hover);
+  transform: scale(1.05);
+}
+
+.button-group {
+  margin-top: 25px;
+  text-align: center;
+}
+
+#add-mode, #save-modes {
+  border: none;
+  padding: 14px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+#add-mode {
+  background-color: #21262d;
+  color: #f0f6fc;
+  border: 1px solid var(--border-color-dark);
+}
+body.dark-mode #add-mode {
+    background-color: #373e47;
+    border-color: #444c56;
+}
+#save-modes {
+  background: linear-gradient(45deg, var(--primary-grad-start), var(--primary-grad-end));
+  color: white;
+}
+#add-mode:hover, #save-modes:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+#status {
+  margin-top: 20px;
+  color: var(--success-color);
+  font-weight: bold;
+  height: 20px;
+  text-align: center;
+}
+
+/* Dark Mode Toggle Switch */
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+}
+.theme-switch-wrapper span {
+  margin-left: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+input:checked + .slider {
+  background: linear-gradient(45deg, var(--primary-grad-start), var(--primary-grad-end));
+}
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--primary-grad-end);
+}
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
+.slider.round {
+  border-radius: 34px;
+}
+.slider.round:before {
+  border-radius: 50%;
+}

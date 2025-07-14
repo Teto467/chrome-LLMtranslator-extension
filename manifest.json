@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "ChatGPT Translator",
+  "name": "ChatGPT 翻訳",
   "version": "1.0",
-  "description": "Translate selected text to Japanese using ChatGPT.",
+  "description": "選択したテキストをChatGPTを使って日本語に翻訳します。",
   "permissions": [
     "contextMenus",
     "scripting",
@@ -17,11 +17,20 @@
       "js": ["content.js"]
     }
   ],
+  "options_page": "options.html",
   "action": {
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png"
+    },
+    "default_title": "ChatGPT 翻訳"
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; object-src 'self'"
   },
   "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
   }
 }
