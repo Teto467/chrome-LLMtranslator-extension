@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>翻訳モード設定</title>
+  <title>AI翻訳設定</title>
   <link rel="icon" href="icon.png" type="image/png">
   <link rel="stylesheet" href="options.css">
 </head>
@@ -10,7 +10,7 @@
 
   <div class="container">
     <div class="header">
-      <h1><img src="icon.png" alt="icon" class="header-icon">翻訳モード設定</h1>
+      <h1><img src="icon.png" alt="icon" class="header-icon">AI翻訳設定</h1>
       <div class="theme-switch-wrapper">
         <label class="theme-switch" for="checkbox">
           <input type="checkbox" id="checkbox" />
@@ -20,15 +20,21 @@
       </div>
     </div>
 
-    <p>右クリックメニューに表示される翻訳モードをカスタマイズします。</p>
-
-    <div id="modes-container">
-      <!-- 翻訳モードがここに動的に挿入されます -->
+    <div class="settings-section">
+        <h2>使用するAIサービス</h2>
+        <p>右クリックメニューから翻訳を実行する際に使用するAIサービスを選択します。変更は自動的に保存されます。</p>
+        <select id="service-select"></select>
     </div>
 
-    <div class="button-group">
-      <button id="add-mode">新しいモードを追加</button>
-      <button id="save-modes">変更を保存</button>
+    <div class="settings-section">
+        <h2>翻訳モード</h2>
+        <p>右クリックメニューに表示される翻訳モードをカスタマイズします。変更は自動的に保存されます。</p>
+        <div id="modes-container">
+          <!-- 翻訳モードがここに動的に挿入されます -->
+        </div>
+        <div class="button-group">
+          <button id="add-mode">新しいモードを追加</button>
+        </div>
     </div>
 
     <div id="status"></div>

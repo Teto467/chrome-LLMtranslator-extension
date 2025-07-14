@@ -1,12 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "ChatGPT 翻訳",
-  "version": "1.0",
-  "description": "選択したテキストをChatGPTを使って日本語に翻訳します。",
+  "name": "AIチャット翻訳",
+  "version": "2.0",
+  "description": "選択したテキストを複数のAIサービス（ChatGPT, Gemini, Claudeなど）を使って翻訳します。",
   "permissions": [
     "contextMenus",
     "scripting",
     "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ],
   "background": {
     "service_worker": "background.js"
@@ -23,10 +26,10 @@
       "16": "icon.png",
       "48": "icon.png"
     },
-    "default_title": "ChatGPT 翻訳"
+    "default_title": "AIチャット翻訳"
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; object-src 'self'"
+    "extension_pages": "script-src 'self'; style-src 'self'; object-src 'self'"
   },
   "icons": {
     "16": "icon.png",

@@ -66,6 +66,7 @@ body.dark-mode {
   align-items: center;
   border-bottom: 1px solid var(--border-color-light);
   padding-bottom: 15px;
+  margin-bottom: 25px;
   transition: border-color 0.4s;
 }
 body.dark-mode .header {
@@ -80,45 +81,73 @@ h1 {
   align-items: center;
 }
 
-/* ★ 追加: ヘッダーアイコンのスタイル */
 .header-icon {
   width: 28px;
   height: 28px;
   margin-right: 12px;
 }
 
+h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color-light);
+    transition: border-color 0.4s;
+}
+body.dark-mode h2 {
+    border-bottom-color: var(--border-color-dark);
+}
+
+
 p {
   color: var(--subtle-text-light);
-  margin-top: 15px;
-  text-align: center;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.6;
   transition: color 0.4s;
 }
 body.dark-mode p {
   color: var(--subtle-text-dark);
 }
 
+/* ★ 変更: セクションごとのスタイル */
+.settings-section {
+    background-color: var(--card-bg-light);
+    border: 1px solid var(--border-color-light);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    animation: fadeIn 0.5s ease-out;
+}
+body.dark-mode .settings-section {
+    background-color: var(--card-bg-dark);
+    border-color: var(--border-color-dark);
+}
+
+
 #modes-container {
   margin-top: 25px;
 }
 
 .mode-item {
-  background-color: var(--card-bg-light);
+  background-color: transparent; /* 親の背景を継承 */
   border: 1px solid var(--border-color-light);
   border-radius: 12px;
-  padding: 25px 25px 60px 25px; /* Increased bottom padding */
+  padding: 25px 25px 60px 25px;
   margin-bottom: 20px;
-  box-shadow: 0 4px 12px var(--shadow-color);
   transition: all 0.3s ease-in-out;
   animation: fadeIn 0.5s ease-out;
   position: relative;
 }
 body.dark-mode .mode-item {
-  background-color: var(--card-bg-dark);
   border-color: var(--border-color-dark);
 }
 .mode-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px var(--shadow-color);
+  border-color: var(--primary-grad-end);
 }
 
 .mode-item label {
@@ -127,8 +156,10 @@ body.dark-mode .mode-item {
   margin-bottom: 8px;
 }
 
+/* ★ 変更: フォーム要素の共通スタイル */
 .mode-item input[type="text"],
-.mode-item textarea {
+.mode-item textarea,
+#service-select {
   width: 100%;
   padding: 12px;
   border: 1px solid var(--border-color-light);
@@ -138,24 +169,44 @@ body.dark-mode .mode-item {
   background-color: var(--input-bg-light);
   color: var(--text-color-light);
   transition: all 0.3s;
+  font-size: 16px; /* フォントサイズを統一 */
+  font-family: var(--font-family);
 }
 body.dark-mode .mode-item input[type="text"],
-body.dark-mode .mode-item textarea {
+body.dark-mode .mode-item textarea,
+body.dark-mode #service-select {
   background-color: var(--input-bg-dark);
   color: var(--text-color-dark);
   border-color: var(--border-color-dark);
 }
 .mode-item input[type="text"]:focus,
-.mode-item textarea:focus {
+.mode-item textarea:focus,
+#service-select:focus {
   outline: none;
   border-color: var(--primary-grad-end);
   box-shadow: 0 0 0 3px rgba(47, 129, 247, 0.3);
   background-color: var(--card-bg-light);
 }
 body.dark-mode .mode-item input[type="text"]:focus,
-body.dark-mode .mode-item textarea:focus {
+body.dark-mode .mode-item textarea:focus,
+body.dark-mode #service-select:focus {
   background-color: var(--card-bg-dark);
 }
+
+/* ★ 追加: select要素の矢印のスタイル */
+#service-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2357606a' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4.427 7.427a.75.75 0 0 1 1.06 0L8 9.94l2.513-2.513a.75.75 0 1 1 1.06 1.06l-3.043 3.043a.75.75 0 0 1-1.06 0L4.427 8.487a.75.75 0 0 1 0-1.06z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+}
+body.dark-mode #service-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238b949e' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4.427 7.427a.75.75 0 0 1 1.06 0L8 9.94l2.513-2.513a.75.75 0 1 1 1.06 1.06l-3.043 3.043a.75.75 0 0 1-1.06 0L4.427 8.487a.75.75 0 0 1 0-1.06z'/%3E%3C/svg%3E");
+}
+
 
 .mode-item textarea {
   min-height: 120px;
@@ -185,7 +236,7 @@ body.dark-mode .mode-item textarea:focus {
   text-align: center;
 }
 
-#add-mode, #save-modes {
+#add-mode {
   border: none;
   padding: 14px 24px;
   border-radius: 8px;
@@ -195,8 +246,6 @@ body.dark-mode .mode-item textarea:focus {
   margin: 0 10px;
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-#add-mode {
   background-color: #21262d;
   color: #f0f6fc;
   border: 1px solid var(--border-color-dark);
@@ -205,11 +254,7 @@ body.dark-mode #add-mode {
     background-color: #373e47;
     border-color: #444c56;
 }
-#save-modes {
-  background: linear-gradient(45deg, var(--primary-grad-start), var(--primary-grad-end));
-  color: white;
-}
-#add-mode:hover, #save-modes:hover {
+#add-mode:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
@@ -220,6 +265,7 @@ body.dark-mode #add-mode {
   font-weight: bold;
   height: 20px;
   text-align: center;
+  transition: opacity 0.5s;
 }
 
 /* Dark Mode Toggle Switch */
