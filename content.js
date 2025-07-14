@@ -6,6 +6,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     
     // サイトごとに入力欄と送信ボタンのセレクタを定義。送信ボタンは配列で複数候補を持つ。
     const siteConfigs = {
+      "chatgpt.com": {
+        input: "div#prompt-textarea",
+        submit: [
+            "button[data-testid='send-button']",
+            "button#composer-submit-button"
+        ]
+      },
       "gemini.google.com": {
         input: "div.ql-editor",
         submit: [
@@ -42,12 +49,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         ]
       },
       "chat.deepseek.com": {
-        // ★ 追加: DeepSeek用の設定
         input: "textarea#chat-input",
         submit: [
-            // クラス名は変更される可能性があるが、現状最も特定性が高い
             "div[class*='_7436101'][role='button']", 
-            // 非常に汎用的なフォールバック
             "div[role='button']"
         ]
       }
@@ -73,7 +77,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         let submitButton = null;
         for (const selector of config.submit) {
             const button = document.querySelector(selector);
-            // ★ 変更: <button>のdisabled属性と、カスタムボタンのaria-disabled属性の両方を正しく判定
             if (button && button.disabled !== true && button.getAttribute('aria-disabled') !== 'true') {
                 submitButton = button;
                 break;
@@ -106,24 +109,30 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             // Grok, Qwen, DeepSeekのような標準的なテキストエリアの場合
             inputElement.value = promptText;
         } else if (host.includes("www.kimi.com")) {
-            // Kimi (Lexical) のためのネイティブコマンド
+            // ★ 変更: Kimi (Lexical) のために、ブラウザの選択範囲を明示的に操作してからコマンドを実行
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(inputElement);
+            range.collapse(false); // カーソルを末尾に移動
+            selection.removeAllRanges();
+            selection.addRange(range);
+
             document.execCommand('insertText', false, promptText);
         } else {
-            // Gemini, ClaudeなどのcontentEditable div用
+            // ChatGPT, Gemini, ClaudeなどのcontentEditable div用
             const promptHTML = promptText
                 .split('\n')
                 .map(line => `<p>${line || '<br>'}</p>`)
                 .join('');
-            inputElement.innerHTML = promptHTML;
+            document.execCommand('insertHTML', false, promptHTML);
         }
         
         inputElement.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
-        inputElement.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
         
         console.log('プロンプトを自動挿入しました。送信を試みます...');
         sendResponse({ success: true });
 
-        setTimeout(() => tryClickSubmit(10), 100);
+        setTimeout(() => tryClickSubmit(10), 200);
       } else {
         setTimeout(() => tryPaste(attemptsLeft - 1), 500);
       }
