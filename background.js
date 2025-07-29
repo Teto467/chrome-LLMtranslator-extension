@@ -58,36 +58,58 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 chrome.contextMenus.onClicked.addListener(handleContextMenuClick);
 
 // --- 関数定義 ---
-function initialize() {
-  chrome.storage.sync.get(['translationModes', 'selectedService'], (data) => {
-    const modes = (data.translationModes && data.translationModes.length > 0) ? data.translationModes : defaultModes;
+
+// ★ 修正: 競合状態によるエラーを防ぐため、初期化処理を管理
+let isInitializing = false;
+async function initialize() {
+  if (isInitializing) {
+    console.log("初期化処理が実行中のため、新規の処理をスキップします。");
+    return;
+  }
+  isInitializing = true;
+
+  try {
+    const data = await chrome.storage.sync.get(['translationModes', 'selectedService']);
+    let modes = (data.translationModes && data.translationModes.length > 0) ? data.translationModes : defaultModes;
+    
     if (!data.translationModes || data.translationModes.length === 0) {
-      chrome.storage.sync.set({ translationModes: defaultModes });
+      await chrome.storage.sync.set({ translationModes: defaultModes });
+      modes = defaultModes; // 変数を更新
     }
+
     const serviceKey = data.selectedService || 'chatgpt';
     const serviceName = AI_SERVICES[serviceKey]?.name || 'ChatGPT';
-    rebuildContextMenus(modes, serviceName);
-  });
+    await rebuildContextMenus(modes, serviceName);
+  } catch (error) {
+    console.error("コンテキストメニューの初期化中にエラーが発生しました:", error);
+  } finally {
+    isInitializing = false;
+  }
 }
 
-function rebuildContextMenus(modes, serviceName) {
-  chrome.contextMenus.removeAll(() => {
-    chrome.contextMenus.create({
-      id: 'parent-translate',
-      title: `${serviceName}で翻訳`,
-      contexts: ['selection']
-    });
-    modes.forEach((mode, index) => {
-      if (mode.title) {
-        chrome.contextMenus.create({
-          id: `translate-mode-${index}`,
-          parentId: 'parent-translate',
-          title: mode.title,
-          contexts: ['selection']
-        });
-      }
-    });
+// ★ 修正: async/await を使用して、処理が完了するのを待つように変更
+async function rebuildContextMenus(modes, serviceName) {
+  // 既存のメニューをすべて削除し、完了を待つ
+  await chrome.contextMenus.removeAll();
+
+  // メインの親メニューを作成
+  await chrome.contextMenus.create({
+    id: 'parent-translate',
+    title: `${serviceName}で翻訳`,
+    contexts: ['selection']
   });
+
+  // 各翻訳モードのサブメニューを作成
+  for (const [index, mode] of modes.entries()) {
+    if (mode.title) {
+      await chrome.contextMenus.create({
+        id: `translate-mode-${index}`,
+        parentId: 'parent-translate',
+        title: mode.title,
+        contexts: ['selection']
+      });
+    }
+  }
 }
 
 async function handleContextMenuClick(info, tab) {
@@ -111,11 +133,14 @@ async function handleContextMenuClick(info, tab) {
     chrome.tabs.create({ url });
   } else {
     // 自動入力ロジック
-    await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: (text) => navigator.clipboard.writeText(text),
-      args: [fullPrompt]
-    }).catch(e => console.error("クリップボードへのコピーに失敗:", e));
+    // ★ 修正: chrome:// や about: などの保護されたページではスクリプトを実行しない
+    if (tab.url && !tab.url.startsWith('chrome://') && !tab.url.startsWith('about:')) {
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: (text) => navigator.clipboard.writeText(text),
+        args: [fullPrompt]
+      }).catch(e => console.error("クリップボードへのコピーに失敗（スクリプト実行時）:", e));
+    }
 
     const newTab = await chrome.tabs.create({ url: service.url, active: true });
 
